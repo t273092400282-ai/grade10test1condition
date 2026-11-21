@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نشاط تفاعلي: اختبار الشروط في لغة بايثون - الصف العاشر</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #f6f8fb;
+    --bg-card: #ffffff;
+    --pastel-pink: #fce8ee;
+    --pastel-pink-border: #f3c6d3;
+    --pastel-blue: #e6f2fa;
+    --pastel-blue-border: #bddcf2;
+    --pastel-mint: #e6f7f2;
+    --pastel-mint-border: #bce6d9;
+    --pastel-lavender: #f0ebfa;
+    --pastel-lavender-border: #d5c8f2;
+    --pastel-peach: #fff2e6;
+    --pastel-peach-border: #f7d7b8;
+    --text-primary: #2d3748;
+    --text-secondary: #5a677d;
+    --accent-primary: #6c63ff;
+    --accent-hover: #574fd6;
+    --pycharm-bg: #2b2b2b;
+    --pycharm-sidebar: #313335;
+    --pycharm-header: #3c3f41;
+    --pycharm-border: #515151;
+    --pycharm-text: #a9b7c6;
+    --pycharm-keyword: #cc7832;
+    --pycharm-string: #6a8759;
+    --pycharm-number: #6897bb;
+    --pycharm-func: #ffc66d;
+    --pycharm-comment: #808080;
+    --pycharm-console: #1e1f22;
+    --success-bg: #e3f9e5;
+    --success-text: #1b6523;
+    --error-bg: #ffe8e8;
+    --error-text: #9b1c1c;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(135deg, #f9f3f6 0%, #eef5fb 50%, #f1f9f6 100%);
+    color: var(--text-primary);
+    line-height: 1.7;
+    padding: 25px 15px 60px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header Card */
+  .header-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(108, 99, 255, 0.06);
+    border: 2px solid var(--pastel-lavender-border);
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #f4a2b8, #9ecae1, #a1d99b, #bcbddc);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 22px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 18px;
+  }
+
+  .title-area h1 {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #3b3663;
+    margin-bottom: 4px;
+  }
+
+  .title-area p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .score-badge {
+    background: var(--pastel-lavender);
+    border: 2px solid var(--pastel-lavender-border);
+    padding: 12px 22px;
+    border-radius: 18px;
+    text-align: center;
+    min-width: 150px;
+  }
+
+  .score-badge .score-label {
+    font-size: 0.85rem;
+    color: #5b4d8a;
+    font-weight: 700;
+    display: block;
+  }
+
+  .score-badge .score-value {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #4c3b82;
+  }
+
+  .student-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .input-group label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #4a5568;
+  }
+
+  .input-group input {
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1.5px solid #cbd5e1;
+    background: #fafcff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.25s ease;
+  }
+
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.12);
+  }
+
+  /* Question Cards */
+  .question-card {
+    background: var(--bg-card);
+    border-radius: 22px;
+    padding: 26px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+    border: 2px solid #edf2f7;
+    transition: transform 0.2s ease;
+  }
+
+  .q-theme-1 { border-color: var(--pastel-pink-border); }
+  .q-theme-2 { border-color: var(--pastel-blue-border); }
+  .q-theme-3 { border-color: var(--pastel-mint-border); }
+  .q-theme-4 { border-color: var(--pastel-peach-border); }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .q-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .q-theme-1 .q-badge { background: var(--pastel-pink); color: #8c2d4b; }
+  .q-theme-2 .q-badge { background: var(--pastel-blue); color: #245c82; }
+  .q-theme-3 .q-badge { background: var(--pastel-mint); color: #1d6952; }
+  .q-theme-4 .q-badge { background: var(--pastel-peach); color: #8c4d19; }
+
+  .q-points {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    padding: 5px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #475569;
+  }
+
+  .q-prompt {
+    font-size: 1.08rem;
+    color: var(--text-primary);
+    margin-bottom: 18px;
+    background: #f9fbfd;
+    padding: 15px 18px;
+    border-radius: 14px;
+    border-right: 4px solid #a3bffa;
+  }
+
+  .q-prompt ul {
+    margin-top: 8px;
+    padding-right: 22px;
+  }
+
+  .q-prompt li {
+    margin-bottom: 4px;
+  }
+
+  /* PyCharm Window Simulation */
+  .pycharm-window {
+    direction: ltr;
+    text-align: left;
+    background: var(--pycharm-bg);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #3c3f41;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 16px;
+  }
+
+  .pycharm-titlebar {
+    background: var(--pycharm-header);
+    padding: 9px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--pycharm-border);
+  }
+
+  .pycharm-left-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .pycharm-tab {
+    background: var(--pycharm-bg);
+    color: #bbbbbb;
+    padding: 4px 12px;
+    border-radius: 6px 6px 0 0;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-top: 2px solid #4a88c7;
+  }
+
+  .py-icon {
+    color: #3776ab;
+    font-weight: bold;
+  }
+
+  .pycharm-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .run-btn {
+    background: #365880;
+    color: #ffffff;
+    border: 1px solid #4c708c;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+
+  .run-btn:hover {
+    background: #436d9e;
+  }
+
+  .play-triangle {
+    color: #499c54;
+    font-size: 0.9rem;
+  }
+
+  .pycharm-editor-body {
+    display: flex;
+    padding: 14px 0;
+    background: var(--pycharm-bg);
+    overflow-x: auto;
+  }
+
+  .line-numbers {
+    background: var(--pycharm-sidebar);
+    color: #606366;
+    padding: 0 12px;
+    text-align: right;
+    user-select: none;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    border-right: 1px solid #3c3f41;
+  }
+
+  .code-lines {
+    padding: 0 16px;
+    color: var(--pycharm-text);
+    font-size: 0.94rem;
+    line-height: 1.85;
+    flex: 1;
+    white-space: pre;
+  }
+
+  .kw { color: var(--pycharm-keyword); font-weight: 500; }
+  .str { color: var(--pycharm-string); }
+  .num { color: var(--pycharm-number); }
+  .fn { color: var(--pycharm-func); }
+  .cmt { color: var(--pycharm-comment); font-style: italic; }
+
+  .code-blank {
+    background: #3c3f41;
+    border: 1.5px solid #5c6164;
+    color: #ffffff;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    padding: 2px 8px;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .code-blank:focus {
+    border-color: #6897bb;
+    background: #45494a;
+  }
+
+  .code-blank::placeholder {
+    color: #787c7e;
+    font-size: 0.8rem;
+  }
+
+  /* PyCharm Run Console */
+  .pycharm-console {
+    background: var(--pycharm-console);
+    border-top: 1px solid var(--pycharm-border);
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: #cccccc;
+  }
+
+  .console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #8c8c8c;
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #2d2f33;
+    padding-bottom: 4px;
+  }
+
+  .console-path {
+    color: #7a7e85;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+
+  .console-output {
+    min-height: 48px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+
+  .console-input-highlight {
+    color: #499c54;
+    font-weight: 600;
+  }
+
+  .console-error {
+    color: #ff6b68;
+  }
+
+  .console-exit {
+    color: #7a7e85;
+    margin-top: 6px;
+    font-size: 0.8rem;
+  }
+
+  /* Interactive Test Input inside Run Bar */
+  .test-input-bar {
+    background: #323538;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #44474a;
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+  }
+
+  .test-input-bar label {
+    color: #d0d7de;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .test-input-bar input {
+    background: #232527;
+    border: 1px solid #55595c;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.88rem;
+    width: 110px;
+    direction: ltr;
+  }
+
+  /* Feedback Box */
+  .feedback-box {
+    display: none;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-top: 10px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .feedback-box.success {
+    display: block;
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1.5px solid #a3e6aa;
+  }
+
+  .feedback-box.error {
+    display: block;
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1.5px solid #f8b4b4;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Bottom Action Bar */
+  .actions-card {
+    background: var(--bg-card);
+    border-radius: 22px;
+    padding: 26px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--pastel-lavender-border);
+    text-align: center;
+  }
+
+  .teacher-email-box {
+    max-width: 480px;
+    margin: 0 auto 20px;
+    text-align: right;
+  }
+
+  .teacher-email-box label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #4a5568;
+    font-size: 0.95rem;
+  }
+
+  .teacher-email-box input {
+    width: 100%;
+    padding: 11px 15px;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    direction: ltr;
+    text-align: left;
+    background: #f8fafc;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .action-btn {
+    padding: 13px 26px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-check-all {
+    background: #7c73e6;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(124, 115, 230, 0.3);
+  }
+  .btn-check-all:hover { background: #665cd6; transform: translateY(-2px); }
+
+  .btn-pdf {
+    background: #f48fb1;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(244, 143, 177, 0.35);
+  }
+  .btn-pdf:hover { background: #ec709a; transform: translateY(-2px); }
+
+  .btn-email {
+    background: #64b5f6;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(100, 181, 246, 0.35);
+  }
+  .btn-email:hover { background: #42a5f5; transform: translateY(-2px); }
+
+  .helper-note {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  /* Print Styles for Clean PDF Export */
+  @media print {
+    body {
+      background: #ffffff !important;
+      padding: 0;
+    }
+    .run-btn, .test-input-bar, .actions-card {
+      display: none !important;
+    }
+    .question-card, .header-card {
+      box-shadow: none !important;
+      break-inside: avoid;
+      margin-bottom: 18px;
+      border: 1.5px solid #cbd5e1 !important;
+    }
+    .pycharm-window {
+      box-shadow: none !important;
+      border: 1px solid #333 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .feedback-box {
+      display: block !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header & Student Info -->
+  <div class="header-card">
+    <div class="header-top">
+      <div class="title-area">
+        <h1>اختبار الشروط في لغة بايثون (Python)</h1>
+        <p>الصف العاشر | إعداد المعلمة: أ. هند الراشد</p>
+      </div>
+      <div class="score-badge">
+        <span class="score-label">الدرجة الكلية</span>
+        <span class="score-value"><span id="totalScore">0</span> / 10</span>
+      </div>
+    </div>
+
+    <div class="student-info-grid">
+      <div class="input-group">
+        <label for="studentName">اسم المتعلمة:</label>
+        <input type="text" id="studentName" placeholder="اكتبي اسمكِ الثلاثي هنا...">
+      </div>
+      <div class="input-group">
+        <label for="studentClass">الصف / الشعبة:</label>
+        <input type="text" id="studentClass" placeholder="مثال: 10 / 2">
+      </div>
+    </div>
+  </div>
+
+  <!-- Question 1: تحقق الشرط البسيط -->
+  <div class="question-card q-theme-1" id="card-q1">
+    <div class="q-header">
+      <span class="q-badge">السؤال الأول: الشرط البسيط (تحقق الشرط)</span>
+      <span class="q-points">الدرجة: <span id="score-q1">0</span> / 2</span>
+    </div>
+    <div class="q-prompt">
+      أكملي التعليمات البرمجية التالية لبرنامج يتحقق من سعر الفستان؛ بحيث إذا كان السعر <strong>أقل من 12</strong> يطبع عبارة <code>i will buy the dress</code>، وفي جميع الأحوال يطبع في النهاية <code>finish</code>.
+    </div>
+
+    <div class="pycharm-window">
+      <div class="pycharm-titlebar">
+        <div class="pycharm-left-bar">
+          <div class="window-dots">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          </div>
+          <div class="pycharm-tab"><span class="py-icon">py</span> ex1.py</div>
+        </div>
+        <div class="pycharm-actions">
+          <button class="run-btn" onclick="runQ1()"><span class="play-triangle">▶</span> تشغيل البرنامج (Run)</button>
+        </div>
+      </div>
+
+      <div class="pycharm-editor-body">
+        <div class="line-numbers">1<br>2<br>3<br>4</div>
+        <div class="code-lines">price = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">'enter dress price:'</span>))
+<input type="text" id="q1_b1" class="code-blank" style="width: 155px;" placeholder="if الشرط :">
+    <span class="fn">print</span>(<span class="str">'i will buy the dress'</span>)
+<input type="text" id="q1_b2" class="code-blank" style="width: 185px;" placeholder="أمر طباعة finish"></div>
+      </div>
+
+      <div class="test-input-bar">
+        <label for="q1_test_price">قيمة الاختبار المدخلة للسعر (price):</label>
+        <input type="number" id="q1_test_price" value="9" step="0.5">
+      </div>
+
+      <div class="pycharm-console">
+        <div class="console-header">
+          <span>Run: ex1</span>
+          <span>Python Console</span>
+        </div>
+        <div class="console-path">C:\Users\Student\PycharmProjects\A10condition\venv\Scripts\python.exe ex1.py</div>
+        <div class="console-output" id="out-q1">اضغطي على زر (▶ تشغيل البرنامج) لمعاينة المخرجات...</div>
+      </div>
+    </div>
+
+    <div class="feedback-box" id="fb-q1"></div>
+  </div>
+
+  <!-- Question 2: عدم تحقق الشرط البسيط -->
+  <div class="question-card q-theme-2" id="card-q2">
+    <div class="q-header">
+      <span class="q-badge">السؤال الثاني: تتبع تنفيذ الشرط البسيط (عدم التحقق)</span>
+      <span class="q-points">الدرجة: <span id="score-q2">0</span> / 2</span>
+    </div>
+    <div class="q-prompt">
+      أمامكِ برنامج الشرط البسيط أدناه. قومي بإدخال قيمة للسعر <strong>تجعل الشرط لا يتحقق</strong> (مثل 15) ثم أكملي السطر الناقص لطباعة الجملة التي تظهر عند تحقق الشرط، وشغّلي البرنامج لملاحظة النتيجة.
+    </div>
+
+    <div class="pycharm-window">
+      <div class="pycharm-titlebar">
+        <div class="pycharm-left-bar">
+          <div class="window-dots">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          </div>
+          <div class="pycharm-tab"><span class="py-icon">py</span> ex1_false.py</div>
+        </div>
+        <div class="pycharm-actions">
+          <button class="run-btn" onclick="runQ2()"><span class="play-triangle">▶</span> تشغيل البرنامج (Run)</button>
+        </div>
+      </div>
+
+      <div class="pycharm-editor-body">
+        <div class="line-numbers">1<br>2<br>3<br>4</div>
+        <div class="code-lines">price = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">'enter dress price:'</span>))
+<span class="kw">if</span> price &lt; <span class="num">12</span>:
+    <input type="text" id="q2_b1" class="code-blank" style="width: 265px;" placeholder="print('i will buy the dress')">
+<span class="fn">print</span>(<span class="str">'finish'</span>)</div>
+      </div>
+
+      <div class="test-input-bar">
+        <label for="q2_test_price">أدخلي سعراً لا يحقق الشرط (أكبر من أو يساوي 12):</label>
+        <input type="number" id="q2_test_price" value="15" step="0.5">
+      </div>
+
+      <div class="pycharm-console">
+        <div class="console-header">
+          <span>Run: ex1_false</span>
+          <span>Python Console</span>
+        </div>
+        <div class="console-path">C:\Users\Student\PycharmProjects\A10condition\venv\Scripts\python.exe ex1_false.py</div>
+        <div class="console-output" id="out-q2">اضغطي على زر (▶ تشغيل البرنامج) لمعاينة المخرجات...</div>
+      </div>
+    </div>
+
+    <div class="feedback-box" id="fb-q2"></div>
+  </div>
+
+  <!-- Question 3: الشرط البديل -->
+  <div class="question-card q-theme-3" id="card-q3">
+    <div class="q-header">
+      <span class="q-badge">السؤال الثالث: الشرط البديل (if ... else)</span>
+      <span class="q-points">الدرجة: <span id="score-q3">0</span> / 3</span>
+    </div>
+    <div class="q-prompt">
+      أكملي التعليمات البرمجية لبرنامج يتحقق من لون الفستان المدخل؛ فإذا كان اللون يساوي <code>'blue'</code> يطبع <code>i will buy the dress</code>، وإلا يطبع <code>its not my favorite color</code>.
+    </div>
+
+    <div class="pycharm-window">
+      <div class="pycharm-titlebar">
+        <div class="pycharm-left-bar">
+          <div class="window-dots">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          </div>
+          <div class="pycharm-tab"><span class="py-icon">py</span> ex2.py</div>
+        </div>
+        <div class="pycharm-actions">
+          <button class="run-btn" onclick="runQ3()"><span class="play-triangle">▶</span> تشغيل البرنامج (Run)</button>
+        </div>
+      </div>
+
+      <div class="pycharm-editor-body">
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5</div>
+        <div class="code-lines">color = <span class="fn">input</span>(<span class="str">'enter dress color:'</span>)
+<span class="kw">if</span> <input type="text" id="q3_b1" class="code-blank" style="width: 165px;" placeholder="color == 'blue'">:
+    <span class="fn">print</span>(<span class="str">'i will buy the dress'</span>)
+<input type="text" id="q3_b2" class="code-blank" style="width: 85px;" placeholder="else:">
+    <input type="text" id="q3_b3" class="code-blank" style="width: 310px;" placeholder="print('its not my favorite color')"></div>
+      </div>
+
+      <div class="test-input-bar">
+        <label for="q3_test_color">اللون المدخل للاختبار (مثال: blue أو red):</label>
+        <input type="text" id="q3_test_color" value="red">
+      </div>
+
+      <div class="pycharm-console">
+        <div class="console-header">
+          <span>Run: ex2</span>
+          <span>Python Console</span>
+        </div>
+        <div class="console-path">C:\Users\Student\PycharmProjects\A10condition\venv\Scripts\python.exe ex2.py</div>
+        <div class="console-output" id="out-q3">اضغطي على زر (▶ تشغيل البرنامج) لمعاينة المخرجات...</div>
+      </div>
+    </div>
+
+    <div class="feedback-box" id="fb-q3"></div>
+  </div>
+
+  <!-- Question 4: الشرط المتسلسل -->
+  <div class="question-card q-theme-4" id="card-q4">
+    <div class="q-header">
+      <span class="q-badge">السؤال الرابع: الشرط المتسلسل (if ... elif ... else)</span>
+      <span class="q-points">الدرجة: <span id="score-q4">0</span> / 3</span>
+    </div>
+    <div class="q-prompt">
+      أكملي برنامج حساب الخصم على المنتجات حسب الشروط المتسلسلة التالية:
+      <ul>
+        <li>إذا كان السعر الإجمالي <code>price</code> أكبر من <strong>1000</strong>، تكون نسبة الخصم <strong>25%</strong> (<code>price * 0.25</code>).</li>
+        <li>وإذا كان السعر الإجمالي أكبر من أو يساوي <strong>500</strong>، تكون نسبة الخصم <strong>15%</strong> (<code>price * 0.15</code>).</li>
+        <li>وإلا يكون الخصم <strong>0</strong>، ثم يُحسب السعر النهائي بطرح الخصم من السعر الإجمالي.</li>
+      </ul>
+    </div>
+
+    <div class="pycharm-window">
+      <div class="pycharm-titlebar">
+        <div class="pycharm-left-bar">
+          <div class="window-dots">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          </div>
+          <div class="pycharm-tab"><span class="py-icon">py</span> calculate_final_price.py</div>
+        </div>
+        <div class="pycharm-actions">
+          <button class="run-btn" onclick="runQ4()"><span class="play-triangle">▶</span> تشغيل البرنامج (Run)</button>
+        </div>
+      </div>
+
+      <div class="pycharm-editor-body">
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12</div>
+        <div class="code-lines"><span class="cmt"># 1. استقبال السعر الإجمالي للمنتجات من المستخدم</span>
+price = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"أدخل السعر الإجمالي: "</span>))
+
+<span class="cmt"># 2. تحديد قيمة الخصم باستخدام الشرط المتسلسل</span>
+<span class="kw">if</span> price &gt; <span class="num">1000</span>:
+    discount = price * <span class="num">0.25</span>
+    rate = <span class="str">"25%"</span>
+<input type="text" id="q4_b1" class="code-blank" style="width: 185px;" placeholder="elif price >= 500:">
+    discount = <input type="text" id="q4_b2" class="code-blank" style="width: 145px;" placeholder="price * 0.15">
+    rate = <span class="str">"15%"</span>
+<span class="kw">else</span>:
+    discount = <span class="num">0</span>
+    rate = <span class="str">"0%"</span>
+
+<span class="cmt"># 3. حساب السعر النهائي بعد تطبيق الخصم</span>
+final_price = <input type="text" id="q4_b3" class="code-blank" style="width: 185px;" placeholder="price - discount">
+<span class="fn">print</span>(<span class="str">f"نسبة الخصم المستحقة: {rate} ({discount:.0f} د.ك)"</span>)
+<span class="fn">print</span>(<span class="str">f"السعر النهائي بعد الخصم هو: {final_price:.0f}"</span>)</div>
+      </div>
+
+      <div class="test-input-bar">
+        <label for="q4_test_price">السعر الإجمالي المدخل للاختبار (جربي 1200 أو 900 أو 400):</label>
+        <input type="number" id="q4_test_price" value="1200" step="50">
+      </div>
+
+      <div class="pycharm-console">
+        <div class="console-header">
+          <span>Run: calculate_final_price</span>
+          <span>Python Console</span>
+        </div>
+        <div class="console-path">C:\Users\Student\PycharmProjects\A10condition\venv\Scripts\python.exe calculate_final_price.py</div>
+        <div class="console-output" id="out-q4">اضغطي على زر (▶ تشغيل البرنامج) لمعاينة المخرجات...</div>
+      </div>
+    </div>
+
+    <div class="feedback-box" id="fb-q4"></div>
+  </div>
+
+  <!-- Submission & Export Card -->
+  <div class="actions-card">
+    <div class="teacher-email-box">
+      <label for="teacherEmail">البريد الإلكتروني للمعلمة (أ. هند الراشد) لإرسال النتيجة:</label>
+      <input type="email" id="teacherEmail" value="T273092400282@moe.edu.kw" readonly>
+    </div>
+
+    <div class="btn-group">
+      <button class="action-btn btn-check-all" onclick="checkAll()">✅ تصحيح جميع الأسئلة وحساب الدرجة</button>
+      <button class="action-btn btn-pdf" onclick="saveAsPDF()">📄 حفظ العمل بصيغة PDF</button>
+      <button class="action-btn btn-email" onclick="sendEmailToTeacher()">✉️ إرسال النتيجة إلى إيميل المعلمة</button>
+    </div>
+
+    <p class="helper-note">
+      ملاحظة: عند الضغط على <strong>"حفظ العمل بصيغة PDF"</strong> اختاري (حفظ بتنسيق PDF / Save as PDF) من نافذة الطباعة، ثم أرفقي الملف في رسالة البريد الإلكتروني الموجهة للمعلمة.
+    </p>
+  </div>
+</div>
+
+<script>
+  const scores = { q1: 0, q2: 0, q3: 0, q4: 0 };
+
+  function normNoSpace(str) {
+    return str.trim().replace(/\s+/g, '').replace(/"/g, "'");
+  }
+
+  function updateTotalScore() {
+    const total = scores.q1 + scores.q2 + scores.q3 + scores.q4;
+    document.getElementById('totalScore').textContent = total;
+    document.getElementById('score-q1').textContent = scores.q1;
+    document.getElementById('score-q2').textContent = scores.q2;
+    document.getElementById('score-q3').textContent = scores.q3;
+    document.getElementById('score-q4').textContent = scores.q4;
+  }
+
+  function setFeedback(qId, isSuccess, message) {
+    const fb = document.getElementById('fb-' + qId);
+    fb.className = 'feedback-box ' + (isSuccess ? 'success' : 'error');
+    fb.innerHTML = message;
+  }
+
+  // Question 1 Logic
+  function runQ1() {
+    const b1 = normNoSpace(document.getElementById('q1_b1').value);
+    const b2 = normNoSpace(document.getElementById('q1_b2').value);
+    const testPrice = parseFloat(document.getElementById('q1_test_price').value) || 0;
+    const out = document.getElementById('out-q1');
+
+    const b1Valid = (b1 === 'ifprice<12:' || b1 === 'if(price<12):');
+    const b2Valid = (b2 === "print('finish')");
+
+    let pts = 0;
+    if (b1Valid) pts += 1;
+    if (b2Valid) pts += 1;
+    scores.q1 = pts;
+    updateTotalScore();
+
+    if (!b1 || !b2) {
+      out.innerHTML = `<span class="console-error">SyntaxError: invalid syntax — يرجى إكمال جميع الفراغات في المحرر أولاً.</span>`;
+      setFeedback('q1', false, '⚠️ توجد فراغات لم يتم إكمالها بعد. تأكدي من كتابة جملة الشرط <code>if price &lt; 12:</code> وأمر طباعة <code>print(\'finish\')</code>.');
+      return;
+    }
+
+    if (b1Valid && b2Valid) {
+      let resultLines = `enter dress price:<span class="console-input-highlight">${testPrice}</span>\n`;
+      if (testPrice < 12) {
+        resultLines += `i will buy the dress\n`;
+      }
+      resultLines += `finish\n<div class="console-exit">Process finished with exit code 0</div>`;
+      out.innerHTML = resultLines;
+
+      if (testPrice < 12) {
+        setFeedback('q1', true, '🌟 أحسنتِ يا مبدعة! إجابتكِ صحيحة تماماً (2 / 2). لأن السعر أقل من 12 تحقق الشرط فطُبعت الجملتان.');
+      } else {
+        setFeedback('q1', true, '🌟 الكود صحيح (2 / 2)! جربي إدخال سعر أقل من 12 (مثل 9) لمشاهدة تحقق الشرط.');
+      }
+    } else {
+      out.innerHTML = `<span class="console-error">SyntaxError أو خطأ منطقي في التعليمات البرمجية المدخلة.</span>`;
+      let hint = '❌ راجعي إجابتكِ: ';
+      if (!b1Valid) hint += 'تأكدي من كتابة الشرط بصيغة <code>if price &lt; 12:</code> ولا تنسي النقطتين الرأسيتين <code>:</code>. ';
+      if (!b2Valid) hint += 'تأكدي من كتابة أمر الطباعة النهائي <code>print(\'finish\')</code>.';
+      setFeedback('q1', false, hint);
+    }
+  }
+
+  // Question 2 Logic
+  function runQ2() {
+    const b1 = normNoSpace(document.getElementById('q2_b1').value);
+    const testPrice = parseFloat(document.getElementById('q2_test_price').value);
+    const out = document.getElementById('out-q2');
+
+    const b1Valid = (b1 === "print('iwillbuythedress')");
+    const conditionFalse = (!isNaN(testPrice) && testPrice >= 12);
+
+    let pts = 0;
+    if (b1Valid) pts += 1;
+    if (conditionFalse) pts += 1;
+    scores.q2 = pts;
+    updateTotalScore();
+
+    if (!b1) {
+      out.innerHTML = `<span class="console-error">IndentationError: expected an indented block — أكملي السطر الثالث داخل جملة if.</span>`;
+      setFeedback('q2', false, '⚠️ أكملي السطر الناقص بأمر الطباعة <code>print(\'i will buy the dress\')</code>.');
+      return;
+    }
+
+    if (b1Valid) {
+      let resultLines = `enter dress price:<span class="console-input-highlight">${isNaN(testPrice) ? 15 : testPrice}</span>\n`;
+      if (testPrice < 12) {
+        resultLines += `i will buy the dress\n`;
+      }
+      resultLines += `finish\n<div class="console-exit">Process finished with exit code 0</div>`;
+      out.innerHTML = resultLines;
+
+      if (conditionFalse) {
+        setFeedback('q2', true, '🌟 رائع! إجابة كاملة (2 / 2). لاحظي أنه عند إدخال سعر 12 فأكثر لم يتحقق الشرط، فتجاهل البرنامج الجملة التابعة للشرط وطبع <code>finish</code> فقط.');
+      } else {
+        setFeedback('q2', false, '👍 أمر الطباعة صحيح (1 / 2)، ولكن المطلوب إدخال قيمة للسعر <strong>تجعل الشرط لا يتحقق</strong> (أي 12 أو أكبر، مثل 15).');
+      }
+    } else {
+      out.innerHTML = `<span class="console-error">NameError / SyntaxError: تأكدي من صيغة أمر الطباعة والنص المطلوب.</span>`;
+      setFeedback('q2', false, '❌ تأكدي من كتابة <code>print(\'i will buy the dress\')</code> بدقة.');
+    }
+  }
+
+  // Question 3 Logic
+  function runQ3() {
+    const b1 = normNoSpace(document.getElementById('q3_b1').value);
+    const b2 = normNoSpace(document.getElementById('q3_b2').value);
+    const b3 = normNoSpace(document.getElementById('q3_b3').value);
+    const testColor = document.getElementById('q3_test_color').value.trim();
+    const out = document.getElementById('out-q3');
+
+    const b1Valid = (b1 === "color=='blue'" || b1 === "(color=='blue')");
+    const b2Valid = (b2 === "else:");
+    const b3Valid = (b3 === "print('itsnotmyfavoritecolor')");
+
+    let pts = 0;
+    if (b1Valid) pts += 1;
+    if (b2Valid) pts += 1;
+    if (b3Valid) pts += 1;
+    scores.q3 = pts;
+    updateTotalScore();
+
+    if (!b1 || !b2 || !b3) {
+      out.innerHTML = `<span class="console-error">SyntaxError: invalid syntax — يرجى إكمال جميع الفراغات في الشرط البديل.</span>`;
+      setFeedback('q3', false, '⚠️ أكملي جميع الفراغات الثلاثة في الكود ثم اضغطي على تشغيل.');
+      return;
+    }
+
+    if (b1Valid && b2Valid && b3Valid) {
+      let resultLines = `enter dress color:<span class="console-input-highlight">${testColor}</span>\n`;
+      if (testColor === 'blue') {
+        resultLines += `i will buy the dress\n`;
+      } else {
+        resultLines += `its not my favorite color\n`;
+      }
+      resultLines += `<div class="console-exit">Process finished with exit code 0</div>`;
+      out.innerHTML = resultLines;
+      setFeedback('q3', true, '🌟 ممتازة! إجابة صحيحة ومتكاملة (3 / 3). جربي تغيير اللون المدخل بين <code>blue</code> و <code>red</code> لملاحظة عمل الشرط البديل <code>else</code>.');
+    } else {
+      out.innerHTML = `<span class="console-error">SyntaxError: خطأ في صياغة الشرط البديل.</span>`;
+      let tips = [];
+      if (!b1Valid) tips.push('استخدمي معامل المساواة المزدوج <code>color == \'blue\'</code>');
+      if (!b2Valid) tips.push('اكتبي كلمة البديل متبوعة بنقطتين <code>else:</code>');
+      if (!b3Valid) tips.push('اكتبي أمر الطباعة <code>print(\'its not my favorite color\')</code>');
+      setFeedback('q3', false, '❌ راجعي النقاط التالية: ' + tips.join(' ، ') + '.');
+    }
+  }
+
+  // Question 4 Logic
+  function runQ4() {
+    const b1 = normNoSpace(document.getElementById('q4_b1').value);
+    const b2 = normNoSpace(document.getElementById('q4_b2').value);
+    const b3 = normNoSpace(document.getElementById('q4_b3').value);
+    const testPrice = parseFloat(document.getElementById('q4_test_price').value) || 0;
+    const out = document.getElementById('out-q4');
+
+    const b1Valid = (b1 === 'elifprice>=500:' || b1 === 'elif(price>=500):');
+    const b2Valid = (b2 === 'price*0.15' || b2 === '0.15*price');
+    const b3Valid = (b3 === 'price-discount');
+
+    let pts = 0;
+    if (b1Valid) pts += 1;
+    if (b2Valid) pts += 1;
+    if (b3Valid) pts += 1;
+    scores.q4 = pts;
+    updateTotalScore();
+
+    if (!b1 || !b2 || !b3) {
+      out.innerHTML = `<span class="console-error">SyntaxError: invalid syntax — يرجى إكمال جميع الفراغات في برنامج الخصم.</span>`;
+      setFeedback('q4', false, '⚠️ أكملي جميع الفراغات في الشرط المتسلسل وحساب السعر النهائي.');
+      return;
+    }
+
+    if (b1Valid && b2Valid && b3Valid) {
+      let discount = 0;
+      let rate = "0%";
+      if (testPrice > 1000) {
+        discount = testPrice * 0.25;
+        rate = "25%";
+      } else if (testPrice >= 500) {
+        discount = testPrice * 0.15;
+        rate = "15%";
+      }
+      const finalPrice = testPrice - discount;
+
+      let resultLines = `أدخل السعر الإجمالي: <span class="console-input-highlight">${testPrice}</span>\n`;
+      resultLines += `نسبة الخصم المستحقة: ${rate} (${Math.round(discount)} د.ك)\n`;
+      resultLines += `السعر النهائي بعد الخصم هو: ${Math.round(finalPrice)}\n`;
+      resultLines += `<div class="console-exit">Process finished with exit code 0</div>`;
+      out.innerHTML = resultLines;
+      setFeedback('q4', true, '🌟 إبداع متميز! إجابتكِ صحيحة بالكامل (3 / 3). جربي اختبار الأسعار (1200 ، 900 ، 400) للتأكد من جميع الحالات.');
+    } else {
+      out.innerHTML = `<span class="console-error">SyntaxError / NameError: خطأ في أحد التعبيرات البرمجية.</span>`;
+      let tips = [];
+      if (!b1Valid) tips.push('الشرط الثاني يكتب <code>elif price &gt;= 500:</code>');
+      if (!b2Valid) tips.push('حساب خصم 15% هو <code>price * 0.15</code>');
+      if (!b3Valid) tips.push('السعر النهائي هو <code>price - discount</code>');
+      setFeedback('q4', false, '❌ راجعي إجابتكِ: ' + tips.join(' ، ') + '.');
+    }
+  }
+
+  function checkAll() {
+    runQ1();
+    runQ2();
+    runQ3();
+    runQ4();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveAsPDF() {
+    const name = document.getElementById('studentName').value.trim();
+    const sClass = document.getElementById('studentClass').value.trim();
+    if (!name || !sClass) {
+      alert('يرجى كتابة اسم المتعلمة والصف في أعلى الصفحة قبل حفظ الملف بصيغة PDF.');
+      document.getElementById('studentName').focus();
+      return;
+    }
+    checkAll();
+    const origTitle = document.title;
+    document.title = `إجابة_اختبار_الشروط_${name}_${sClass}`;
+    setTimeout(() => {
+      window.print();
+      document.title = origTitle;
+    }, 300);
+  }
+
+  function sendEmailToTeacher() {
+    const name = document.getElementById('studentName').value.trim();
+    const sClass = document.getElementById('studentClass').value.trim();
+    const email = document.getElementById('teacherEmail').value.trim();
+
+    if (!name || !sClass) {
+      alert('يرجى كتابة اسم المتعلمة والصف في الأعلى أولاً.');
+      document.getElementById('studentName').focus();
+      return;
+    }
+    if (!email) {
+      alert('يرجى إدخال البريد الإلكتروني للمعلمة في الخانة المخصصة.');
+      document.getElementById('teacherEmail').focus();
+      return;
+    }
+
+    checkAll();
+    const total = scores.q1 + scores.q2 + scores.q3 + scores.q4;
+
+    const subject = encodeURIComponent(`تسليم اختبار الشروط - ${name} (${sClass})`);
+    const body = encodeURIComponent(
+      `السلام عليكم ورحمة الله وبركاته معلمتي الفاضلة أ. هند الراشد،\n\n` +
+      `مرفق لسيادتكم ملف إجابتي (PDF) على النشاط التفاعلي: اختبار الشروط في لغة بايثون.\n\n` +
+      `بيانات المتعلمة:\n` +
+      `- الاسم: ${name}\n` +
+      `- الصف: ${sClass}\n` +
+      `- الدرجة الحاصلة عليها: ${total} من 10\n` +
+      `  * السؤال الأول (تحقق الشرط البسيط): ${scores.q1} / 2\n` +
+      `  * السؤال الثاني (عدم تحقق الشرط البسيط): ${scores.q2} / 2\n` +
+      `  * السؤال الثالث (الشرط البديل): ${scores.q3} / 3\n` +
+      `  * السؤال الرابع (الشرط المتسلسل): ${scores.q4} / 3\n\n` +
+      `(ملاحظة: يرجى إرفاق ملف الـ PDF الذي تم حفظه في هذه الرسالة قبل الإرسال).\n\n` +
+      `مع خالص التقدير والاحترام.`
+    );
+
+    alert('سيتم الآن فتح تطبيق البريد الإلكتروني لإرسال النتيجة إلى المعلمة. لا تنسي إرفاق ملف الـ PDF الذي قمتِ بحفظه!');
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  }
+</script>
+</body>
+</html>
